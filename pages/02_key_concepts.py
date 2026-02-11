@@ -137,9 +137,10 @@ with tab2:
         "reward model (proxy) keeps going up because it can't capture every nuance."
     )
 
-    col1, col2 = st.columns([1, 2])
-    with col1:
+    sl1, sl2 = st.columns(2)
+    with sl1:
         noise = st.slider("Proxy noise (misalignment)", 0.0, 1.0, 0.3, 0.05)
+    with sl2:
         kl_budget = st.slider("KL budget", 0.5, 20.0, 5.0, 0.5)
 
     x = np.linspace(0, 20, 200)
@@ -154,38 +155,40 @@ with tab2:
     opt_point = min(kl_budget, 20)
     policy_x = opt_point
 
-    with col2:
-        fig = go.Figure()
-        fig.add_trace(
-            go.Scatter(
-                x=x, y=true_reward,
-                mode="lines",
-                name="True Quality",
-                line=dict(color=COLORS["green"], width=3),
-            )
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=x, y=true_reward,
+            mode="lines",
+            name="True Quality",
+            line=dict(color=COLORS["green"], width=3),
         )
-        fig.add_trace(
-            go.Scatter(
-                x=x, y=proxy_reward,
-                mode="lines",
-                name="Proxy Reward (RM)",
-                line=dict(color=COLORS["red"], width=3, dash="dash"),
-            )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=x, y=proxy_reward,
+            mode="lines",
+            name="Proxy Reward (RM)",
+            line=dict(color=COLORS["red"], width=3, dash="dash"),
         )
-        # Mark the optimal point
-        fig.add_vline(x=5, line_dash="dot", line_color=COLORS["gray"],
-                       annotation_text="True optimum")
-        fig.add_vline(x=policy_x, line_dash="dot", line_color=COLORS["orange"],
-                       annotation_text=f"Policy (KL={kl_budget:.1f})")
+    )
+    # Mark the optimal point and policy point with offset annotations
+    fig.add_vline(x=5, line_dash="dot", line_color=COLORS["gray"],
+                   annotation_text="True optimum",
+                   annotation_position="top left")
+    fig.add_vline(x=policy_x, line_dash="dot", line_color=COLORS["orange"],
+                   annotation_text=f"Policy (KL={kl_budget:.1f})",
+                   annotation_position="top right")
 
-        fig.update_layout(
-            title="Reward Hacking: Proxy vs True Quality",
-            xaxis_title="Optimization pressure (KL from base)",
-            yaxis_title="Reward",
-            height=400,
-            legend=dict(orientation="h", y=1.12),
-        )
-        st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(
+        title="Reward Hacking: Proxy vs True Quality",
+        xaxis_title="Optimization pressure (KL from base)",
+        yaxis_title="Reward",
+        height=420,
+        legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center"),
+        margin=dict(b=80),
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     # Evaluation
     true_at_policy = float(np.interp(policy_x, x, true_reward))
