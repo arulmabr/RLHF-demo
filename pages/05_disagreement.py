@@ -329,16 +329,17 @@ with phase_tabs[1]:
     # Current noise level marker
     fig_acc.add_vline(x=noise_level, line_dash="dot", line_color=COLORS["cyan"],
                        annotation_text=f"Current: {noise_level:.0%}",
-                       annotation_position="top")
+                       annotation_position="bottom right")
 
     fig_acc.update_layout(
         xaxis_title="Annotator Disagreement Rate",
         yaxis_title="Label Accuracy (majority vote)",
         title="More Annotators Help — But Can't Fix Fundamental Disagreement",
-        height=420,
+        height=450,
         yaxis=dict(range=[0.45, 1.0]),
         xaxis=dict(tickformat=".0%"),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
+        legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5),
+        margin=dict(b=80),
     )
     st.plotly_chart(fig_acc, use_container_width=True)
 

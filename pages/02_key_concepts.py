@@ -6,7 +6,7 @@ from style import COLORS, inject_custom_css, softmax, kl_divergence, sigmoid
 inject_custom_css()
 
 st.markdown(
-    '<p class="section-header">UC BERKELEY CDSS 94 — POSTTRAINING.AI</p>',
+    '<p class="section-header">CORE THEORY</p>',
     unsafe_allow_html=True,
 )
 st.title("Key Concepts")

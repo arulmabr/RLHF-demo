@@ -97,6 +97,18 @@ def inject_custom_css():
     </style>
     """, unsafe_allow_html=True)
 
+    # Sidebar branding on every page
+    st.sidebar.markdown(f"""
+<div style="padding:12px 0 8px 0; border-bottom:1px solid #2A2D3E; margin-bottom:8px;">
+<strong style="color:#4A90D9; font-size:0.9rem;">CDSS 94</strong><br/>
+<span style="color:#95A5A6; font-size:0.75rem;">
+Building Thoughtful AI Systems<br/>
+UC Berkeley &bull; Spring 2026<br/>
+<a href="https://www.posttraining.ai/syllabus" style="color:#4A90D9;">posttraining.ai</a>
+</span>
+</div>
+""", unsafe_allow_html=True)
+
 
 # ── Utility functions ────────────────────────────────────────────────────────
 def softmax(x, temperature=1.0):

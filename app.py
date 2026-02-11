@@ -10,7 +10,17 @@ st.set_page_config(
 from style import inject_custom_css, COLORS
 inject_custom_css()
 
-st.markdown('<p class="section-header">UC BERKELEY CDSS 94 &mdash; POSTTRAINING.AI</p>', unsafe_allow_html=True)
+st.markdown(f"""
+<div style="display:flex; align-items:center; gap:12px; margin-bottom:4px;">
+<div>
+<p class="section-header" style="margin:0;">CDSS 94 &mdash; BUILDING THOUGHTFUL AI SYSTEMS</p>
+<p style="color:{COLORS['gray']}; font-size:0.8rem; margin:0;">
+UC Berkeley &bull; Spring 2026 &bull; Instructors: Karina Nguyen &amp; Kevin Miao &bull;
+<a href="https://www.posttraining.ai/syllabus" style="color:{COLORS['blue']};">posttraining.ai</a>
+</p>
+</div>
+</div>
+""", unsafe_allow_html=True)
 st.title("How RLHF Actually Works")
 st.markdown("#### An interactive walkthrough of post-training alignment")
 

@@ -148,7 +148,7 @@ def reset_demo():
 
 # ── Header ───────────────────────────────────────────────────────────────────
 st.markdown(
-    '<p class="section-header">UC BERKELEY CDSS 94 — POSTTRAINING.AI</p>',
+    '<p class="section-header">RLHF PIPELINE</p>',
     unsafe_allow_html=True,
 )
 st.title("Interactive RLHF Pipeline")
