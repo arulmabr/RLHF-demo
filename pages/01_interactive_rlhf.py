@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(page_title="Interactive RLHF", page_icon="🔄", layout="wide")
+
 import numpy as np
 import plotly.graph_objects as go
 from style import COLORS, inject_custom_css, sigmoid
@@ -225,7 +228,7 @@ else:
     # Show what the user chose
     summary_cols = st.columns(len(COMPARISONS))
     for i, comp in enumerate(COMPARISONS):
-        pref = st.session_state.preferences[comp["id"]]
+        pref = st.session_state.preferences.get(comp["id"], "A")
         chosen = comp[pref]
         with summary_cols[i]:
             st.markdown(
@@ -402,14 +405,16 @@ else:
     # Base policy: roughly uniform over styles
     base_probs = np.ones(len(STYLE_DIMS)) / len(STYLE_DIMS)
 
-    # Optimized policy: tilt by reward
-    log_probs = np.log(base_probs) + style_weights / beta
+    # Optimized policy: tilt by reward (clip for numerical stability at low beta)
+    logits = np.clip(style_weights / beta, -50, 50)
+    log_probs = np.log(base_probs) + logits
     log_probs -= log_probs.max()
     opt_probs = np.exp(log_probs)
     opt_probs /= opt_probs.sum()
 
-    # KL divergence
-    kl = float(np.sum(opt_probs * np.log(opt_probs / base_probs)))
+    # KL divergence (clip to avoid log(0))
+    opt_clipped = np.clip(opt_probs, 1e-10, 1.0)
+    kl = float(np.sum(opt_clipped * np.log(opt_clipped / base_probs)))
 
     # Metrics row
     m1, m2, m3 = st.columns(3)
@@ -450,11 +455,13 @@ else:
     betas = np.linspace(0.02, 2.0, 100)
     kls = []
     for b in betas:
-        lp = np.log(base_probs) + style_weights / b
+        lg = np.clip(style_weights / b, -50, 50)
+        lp = np.log(base_probs) + lg
         lp -= lp.max()
         op = np.exp(lp)
         op /= op.sum()
-        kls.append(float(np.sum(op * np.log(op / base_probs))))
+        op_c = np.clip(op, 1e-10, 1.0)
+        kls.append(float(np.sum(op_c * np.log(op_c / base_probs))))
 
     fig_kl = go.Figure()
     fig_kl.add_trace(
@@ -493,7 +500,7 @@ else:
         f"<br/><br/>"
         f"Your preferences shifted the model toward: "
         f"<strong style='color:{COLORS['green']}'>"
-        f"{', '.join(STYLE_DIMS[i] for i in np.argsort(style_weights)[::-1][:2] if style_weights[i] > 0)}"
+        f"{', '.join(STYLE_DIMS[i] for i in np.argsort(style_weights)[::-1][:2] if style_weights[i] > 0) or 'a balanced mix (no strong preference signal)'}"
         f"</strong>"
         f"</div>",
         unsafe_allow_html=True,
@@ -509,8 +516,8 @@ else:
 
     # Pick the top two valued and bottom two valued styles
     ranked = np.argsort(style_weights)[::-1]
-    top_styles = [STYLE_DIMS[i] for i in ranked[:2] if style_weights[ranked[0]] > 0]
-    low_styles = [STYLE_DIMS[i] for i in ranked[-2:] if style_weights[ranked[-1]] < style_weights[ranked[0]]]
+    top_styles = [STYLE_DIMS[i] for i in ranked[:2] if style_weights[i] > 0]
+    low_styles = [STYLE_DIMS[i] for i in ranked[-2:] if style_weights[i] < 0]
 
     before_col, after_col = st.columns(2, gap="large")
     with before_col:

@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(page_title="Key Concepts", page_icon="📐", layout="wide")
+
 import numpy as np
 import plotly.graph_objects as go
 from style import COLORS, inject_custom_css, softmax, kl_divergence, sigmoid
@@ -43,8 +46,10 @@ with tab1:
 
         st.markdown("**Optimized distribution:**")
         p_good = st.slider("P(good)", 0.01, 0.97, 0.5, 0.01)
-        p_great = st.slider("P(great)", 0.01, 0.97 - p_good, 0.3, 0.01)
-        p_bad = st.slider("P(bad)", 0.01, max(0.97 - p_good - p_great, 0.02), 0.15, 0.01)
+        max_great = max(0.97 - p_good, 0.02)
+        p_great = st.slider("P(great)", 0.01, max_great, min(0.3, max_great), 0.01)
+        max_bad = max(0.97 - p_good - p_great, 0.02)
+        p_bad = st.slider("P(bad)", 0.01, max_bad, min(0.15, max_bad), 0.01)
         p_terrible = max(1.0 - p_good - p_great - p_bad, 0.01)
         opt = np.array([p_good, p_great, p_bad, p_terrible])
         opt = opt / opt.sum()  # normalize

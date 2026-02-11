@@ -91,7 +91,7 @@ HARD_CASES = [
         "response_b": "AI-generated content reaches a massive audience without the cultural context that surrounds published literature. There's a real risk of normalizing harmful behavior, especially for younger users who may not critically evaluate what they read. Caution is warranted.",
         "label_a": "Allow it — art requires moral complexity",
         "label_b": "Restrict it — risk of normalization",
-        "annotator_votes": [False, True, True, True, False],
+        "annotator_votes": [False, True, True, False, False],
         "split": "3-2 for B",
     },
     {
@@ -100,7 +100,7 @@ HARD_CASES = [
         "response_b": "The AI should suggest a more measured tone. Aggressive language, even if not threatening, can escalate conflicts. The AI's role should include nudging users toward more productive communication.",
         "label_a": "Help as requested — user autonomy",
         "label_b": "Suggest softer tone — reduce harm",
-        "annotator_votes": [False, True, True, False, True],
+        "annotator_votes": [False, True, True, False, False],
         "split": "3-2 for B",
     },
 ]
@@ -108,11 +108,6 @@ HARD_CASES = [
 # ── Session state ────────────────────────────────────────────────────────────
 if "annot_votes" not in st.session_state:
     st.session_state.annot_votes = {}  # prompt_id -> "A" or "B"
-if "annot_phase" not in st.session_state:
-    st.session_state.annot_phase = 1
-
-# ── Phase navigation ────────────────────────────────────────────────────────
-phase = st.session_state.annot_phase
 
 phase_tabs = st.tabs(["Phase 1: Vote & Compare", "Phase 2: Noise Destroys Accuracy", "Phase 3: Hard Cases"])
 
@@ -260,30 +255,6 @@ with phase_tabs[1]:
     # Simulate noisy labels: each of 5 annotators votes, with noise
     n_annotators = 5
     correct_probs = sigmoid(true_margins)  # P(annotator picks A) based on true margin
-
-    annotator_accuracy = []
-    rm_accuracy_by_n = []
-
-    for n_ann in range(1, n_annotators + 1):
-        votes_correct = 0
-        rm_correct = 0
-        for i in range(n_pairs):
-            # Each annotator votes with noise
-            votes = []
-            for _ in range(n_ann):
-                if rng.rand() < noise_level:
-                    # Flip the label
-                    vote = rng.rand() > correct_probs[i]
-                else:
-                    vote = rng.rand() < correct_probs[i]
-                votes.append(vote)
-            majority_a = sum(votes) > n_ann / 2
-            true_a = true_margins[i] > 0
-
-            if majority_a == true_a:
-                rm_correct += 1
-
-        rm_accuracy_by_n.append(rm_correct / n_pairs)
 
     # Sweep noise levels
     noise_sweep = np.linspace(0, 0.5, 50)
@@ -445,5 +416,4 @@ This is why research on <strong>pluralistic alignment</strong> and <strong>const
     st.markdown("")
     if st.button("Reset All Votes"):
         st.session_state.annot_votes = {}
-        st.session_state.annot_phase = 1
         st.rerun()

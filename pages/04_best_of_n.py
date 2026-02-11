@@ -123,11 +123,17 @@ st.markdown("---")
 # ── Scaling curves: sweep over N ────────────────────────────────────────────
 st.markdown("### Scaling Curves: What Happens as N Grows?")
 
+if rm_noise > 0.1:
+    insight_text = ("As N increases, the best proxy reward keeps climbing — "
+                    "but true quality plateaus and eventually <em>drops</em> due to reward hacking. "
+                    "The RM selects responses that exploit its blind spots.")
+else:
+    insight_text = ("With near-zero RM noise, the proxy closely tracks true quality — "
+                    "so higher N reliably helps. Try increasing the noise to see reward hacking emerge.")
+
 st.markdown(f"""
 <div class="insight-box">
-<strong>Key insight:</strong> As N increases, the best proxy reward keeps climbing —
-but true quality plateaus and eventually <em>drops</em> due to reward hacking.
-The RM selects responses that exploit its blind spots.
+<strong>Key insight:</strong> {insight_text}
 </div>
 """, unsafe_allow_html=True)
 
@@ -138,13 +144,16 @@ avg_true = []
 avg_proxy = []
 avg_oracle = []
 
+# Use a separate RNG so scaling curves don't change when N changes the scatter plot
+rng_scaling = np.random.RandomState(st.session_state.bon_seed + 10000)
+
 for n_val in N_values:
     trial_true = []
     trial_proxy = []
     trial_oracle = []
     for t in range(n_trials):
-        tq = rng.randn(n_val)
-        pr = tq + rm_noise * rng.randn(n_val)
+        tq = rng_scaling.randn(n_val)
+        pr = tq + rm_noise * rng_scaling.randn(n_val)
         best = np.argmax(pr)
         trial_true.append(tq[best])
         trial_proxy.append(pr[best])
