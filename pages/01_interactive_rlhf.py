@@ -337,29 +337,33 @@ else:
         st.plotly_chart(fig_rewards, use_container_width=True)
 
     # ── Check: does RM predict your preferences correctly? ───────────────────
+    # Use leave-one-out: for each comparison, train on the OTHER 4 and predict this one
     st.markdown("#### Does the Reward Model Agree With You?")
     correct = 0
     rows = []
-    for comp in COMPARISONS:
+    for i, comp in enumerate(COMPARISONS):
         pref = st.session_state.preferences[comp["id"]]
         rej = "B" if pref == "A" else "A"
-        r_pref = float(np.dot(comp[pref]["styles"], style_weights))
-        r_rej = float(np.dot(comp[rej]["styles"], style_weights))
+        # Leave-one-out: weights from all comparisons EXCEPT this one
+        loo_diffs = [style_diffs[j] for j in range(len(COMPARISONS)) if j != i]
+        loo_weights = np.mean(loo_diffs, axis=0) if loo_diffs else style_weights
+        r_pref = float(np.dot(comp[pref]["styles"], loo_weights))
+        r_rej = float(np.dot(comp[rej]["styles"], loo_weights))
         prob = float(sigmoid(r_pref - r_rej))
         match = r_pref > r_rej
         if match:
             correct += 1
         rows.append(
             {
-                "Prompt": comp["prompt"][:40] + "...",
-                "Your Pick": comp[pref]["label"],
+                "Prompt": comp["prompt"][:35] + "...",
+                "Chosen": comp[pref]["label"],
                 "Rejected": comp[rej]["label"],
-                "P(your pick wins)": f"{prob:.1%}",
-                "RM Agrees?": "Yes" if match else "No",
+                "P(win)": f"{prob:.1%}",
+                "RM OK?": "Yes" if match else "No",
             }
         )
 
-    st.dataframe(rows, use_container_width=True, hide_index=True)
+    st.table(rows)
     st.markdown(
         f'<div class="insight-box"><strong>Reward model accuracy:</strong> '
         f"{correct}/{total} ({correct/total:.0%}) of your preferences predicted correctly."
