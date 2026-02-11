@@ -1,53 +1,50 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title="Post-Training Foundations",
+    page_title="RLHF Interactive Demo",
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded",
 )
 
-from style import inject_custom_css
+from style import inject_custom_css, COLORS
 inject_custom_css()
 
 st.markdown('<p class="section-header">UC BERKELEY CDSS 94 &mdash; POSTTRAINING.AI</p>', unsafe_allow_html=True)
-st.title("Post-Training Foundations")
-st.markdown("#### Interactive Platform &mdash; Lecture 3")
+st.title("How RLHF Actually Works")
+st.markdown("#### An interactive walkthrough of post-training alignment")
+
+st.markdown("---")
+
+# ── Pipeline diagram ──
+st.markdown("### The Post-Training Pipeline")
+
+cols = st.columns(5)
+steps = [
+    ("1. Pretrain", "Train on internet text. Learns language, not behavior."),
+    ("2. SFT", "Fine-tune on curated examples. Learns to follow instructions."),
+    ("3. Human Feedback", "Humans compare outputs and pick the better one."),
+    ("4. Reward Model", "A model that scores outputs based on human preferences."),
+    ("5. RLHF", "Optimize the LLM to get high reward while staying close to SFT."),
+]
+
+for col, (title, desc) in zip(cols, steps):
+    with col:
+        st.markdown(f"""
+<div class="concept-card" style="min-height:140px;">
+<strong style="color:{COLORS['blue']}">{title}</strong><br/><br/>
+<span style="color:#95A5A6;font-size:0.85rem;">{desc}</span>
+</div>
+""", unsafe_allow_html=True)
 
 st.markdown("---")
 
 st.markdown("""
-### Navigate the Sections
+### Try It Yourself
 
-Use the **sidebar** to explore each post-training technique interactively.
-Each page contains brief explanations, live demos with sliders, and key insights
-drawn from the 12 sections of Lecture 3.
+Use the **sidebar** to navigate:
 
+- **Interactive RLHF** — *You* are the human annotator. Pick preferred responses,
+  watch a reward model learn your preferences, then see how RLHF optimizes the policy.
+- **Key Concepts** — KL divergence, reward hacking, DPO, and why this is hard.
 """)
-
-cols = st.columns(3)
-
-sections = [
-    ("I. The Big Idea", "Prediction = Compression. Play with entropy, zlib, and predictability.", "01"),
-    ("II. SFT", "Simulate supervised fine-tuning: distribution shifts and failure modes.", "02"),
-    ("III. KL Divergence", "Interactive KL calculator, forward vs reverse KL, KL budget.", "03"),
-    ("IV. Distillation", "Temperature scaling, soft labels, CoT distillation.", "04"),
-    ("V. Reward Modeling", "Be the reward model: Bradley-Terry, bias sliders, Goodhart.", "05"),
-    ("VI. RLHF / PPO", "Boltzmann tilt, PPO clipping, the full training loop.", "06"),
-    ("VII. DPO", "Implicit reward, gradient weighting, beta sensitivity.", "07"),
-    ("VIII. Constitutional AI", "Critique-revise loop, over-refusal tradeoff.", "08"),
-    ("IX. Best-of-N", "Rejection sampling visualization, KL cost, iterated BoN.", "09"),
-    ("X. Verifiable Rewards", "Sparse binary reward, emergence threshold.", "10"),
-    ("XI. Reasoning", "GRPO vs PPO, emergent behaviors, process reward models.", "11"),
-    ("XII. Agentic & Eval", "Multi-turn challenges, the eval crisis.", "12"),
-    ("XIII. Frontier", "Compression frame summary, method comparison.", "13"),
-]
-
-for i, (title, desc, _) in enumerate(sections):
-    with cols[i % 3]:
-        st.markdown(f"""
-<div class="concept-card">
-<strong>{title}</strong><br/>
-<span style="color:#95A5A6;font-size:0.9rem;">{desc}</span>
-</div>
-""", unsafe_allow_html=True)
