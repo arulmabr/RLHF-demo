@@ -199,7 +199,7 @@ if n_done < total:
         if st.button(
             "👈  Prefer A",
             key=f"choose_a_{comp['id']}",
-            width="stretch",
+            use_container_width=True,
         ):
             st.session_state.preferences[comp["id"]] = "A"
             st.rerun()
@@ -214,7 +214,7 @@ if n_done < total:
         if st.button(
             "Prefer B  👉",
             key=f"choose_b_{comp['id']}",
-            width="stretch",
+            use_container_width=True,
         ):
             st.session_state.preferences[comp["id"]] = "B"
             st.rerun()
@@ -544,6 +544,6 @@ else:
         )
 
     st.markdown("")
-    if st.button("Start Over", width="stretch"):
+    if st.button("Start Over", use_container_width=True):
         reset_demo()
         st.rerun()
