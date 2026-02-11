@@ -274,7 +274,7 @@ if current_round >= total_rounds:
         showlegend=True,
         height=420,
     )
-    st.plotly_chart(fig_radar, use_container_width=True)
+    st.plotly_chart(fig_radar, width="stretch")
 
     # Summary table
     st.markdown("#### Round-by-Round Review")
@@ -369,7 +369,7 @@ else:
             height=380,
             legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
         st.markdown(f"**Score so far:** {st.session_state.hack_score} / {current_round + 1}")
 

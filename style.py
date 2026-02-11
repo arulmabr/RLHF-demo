@@ -104,7 +104,8 @@ def inject_custom_css():
 <span style="color:#95A5A6; font-size:0.75rem;">
 Building Thoughtful AI Systems<br/>
 UC Berkeley &bull; Spring 2026<br/>
-<a href="https://www.posttraining.ai/syllabus" style="color:#4A90D9;">posttraining.ai</a>
+<a href="https://www.posttraining.ai/syllabus" style="color:#4A90D9;">posttraining.ai</a><br/>
+Built by <a href="https://arulmurugan.me" style="color:#4A90D9;">Arul Murugan</a>
 </span>
 </div>
 """, unsafe_allow_html=True)

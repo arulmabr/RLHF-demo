@@ -80,7 +80,7 @@ with tab1:
             barmode="group",
             height=350,
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, width="stretch")
 
     st.markdown(
         f'<div class="insight-box">'
@@ -188,7 +188,7 @@ with tab2:
         legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center"),
         margin=dict(b=80),
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig, width="stretch")
 
     # Evaluation
     true_at_policy = float(np.interp(policy_x, x, true_reward))
@@ -277,7 +277,7 @@ with tab3:
         showarrow=False,
         font=dict(color=COLORS["green"]),
     )
-    st.plotly_chart(fig_dpo, use_container_width=True)
+    st.plotly_chart(fig_dpo, width="stretch")
 
     # ── Comparison table ──
     st.markdown("---")

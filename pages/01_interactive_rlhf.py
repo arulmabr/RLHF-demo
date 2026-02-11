@@ -196,7 +196,7 @@ if n_done < total:
         if st.button(
             "👈  Prefer A",
             key=f"choose_a_{comp['id']}",
-            use_container_width=True,
+            width="stretch",
         ):
             st.session_state.preferences[comp["id"]] = "A"
             st.rerun()
@@ -211,7 +211,7 @@ if n_done < total:
         if st.button(
             "Prefer B  👉",
             key=f"choose_b_{comp['id']}",
-            use_container_width=True,
+            width="stretch",
         ):
             st.session_state.preferences[comp["id"]] = "B"
             st.rerun()
@@ -302,7 +302,7 @@ else:
             showlegend=False,
         )
         fig_styles.add_hline(y=0, line_dash="dash", line_color=COLORS["gray"])
-        st.plotly_chart(fig_styles, use_container_width=True)
+        st.plotly_chart(fig_styles, width="stretch")
 
     with col_rm2:
         st.markdown("#### Reward Scores Per Response")
@@ -334,7 +334,7 @@ else:
             margin=dict(l=180),
         )
         fig_rewards.add_vline(x=0, line_dash="dash", line_color=COLORS["gray"])
-        st.plotly_chart(fig_rewards, use_container_width=True)
+        st.plotly_chart(fig_rewards, width="stretch")
 
     # ── Check: does RM predict your preferences correctly? ───────────────────
     # Use leave-one-out: for each comparison, train on the OTHER 4 and predict this one
@@ -444,7 +444,7 @@ else:
         legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center"),
         margin=dict(b=80),
     )
-    st.plotly_chart(fig_policy, use_container_width=True)
+    st.plotly_chart(fig_policy, width="stretch")
 
     # KL vs beta curve — full width
     betas = np.linspace(0.02, 2.0, 100)
@@ -481,7 +481,7 @@ else:
         height=300,
         showlegend=False,
     )
-    st.plotly_chart(fig_kl, use_container_width=True)
+    st.plotly_chart(fig_kl, width="stretch")
 
     # ── Insight: what happens at extreme beta ────────────────────────────────
     st.markdown(
@@ -537,6 +537,6 @@ else:
         )
 
     st.markdown("")
-    if st.button("Start Over", use_container_width=True):
+    if st.button("Start Over", width="stretch"):
         reset_demo()
         st.rerun()

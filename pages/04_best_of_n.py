@@ -108,7 +108,7 @@ fig_scatter.update_layout(
     height=450,
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
 )
-st.plotly_chart(fig_scatter, use_container_width=True)
+st.plotly_chart(fig_scatter, width="stretch")
 
 # Metrics
 col_m1, col_m2, col_m3 = st.columns(3)
@@ -200,7 +200,7 @@ fig_scaling.update_layout(
     height=450,
     legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="center", x=0.5),
 )
-st.plotly_chart(fig_scaling, use_container_width=True)
+st.plotly_chart(fig_scaling, width="stretch")
 
 # Gap analysis
 st.markdown("### The Overoptimization Gap")
@@ -221,7 +221,7 @@ fig_gap.update_layout(
     title="How Much Does the RM Overestimate?",
     height=350,
 )
-st.plotly_chart(fig_gap, use_container_width=True)
+st.plotly_chart(fig_gap, width="stretch")
 
 st.markdown("---")
 

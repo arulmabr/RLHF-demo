@@ -210,7 +210,7 @@ with phase_tabs[0]:
             yaxis=dict(autorange="reversed"),
             xaxis=dict(side="top"),
         )
-        st.plotly_chart(fig_heat, use_container_width=True)
+        st.plotly_chart(fig_heat, width="stretch")
 
         # Agreement stats
         st.markdown("#### Annotator Profiles")
@@ -341,7 +341,7 @@ with phase_tabs[1]:
         legend=dict(orientation="h", yanchor="top", y=-0.18, xanchor="center", x=0.5),
         margin=dict(b=80),
     )
-    st.plotly_chart(fig_acc, use_container_width=True)
+    st.plotly_chart(fig_acc, width="stretch")
 
     # Confidence distribution
     st.markdown("#### Reward Model Confidence Distribution")
@@ -374,7 +374,7 @@ with phase_tabs[1]:
         title="Distribution of Annotator Agreement",
         height=350,
     )
-    st.plotly_chart(fig_conf, use_container_width=True)
+    st.plotly_chart(fig_conf, width="stretch")
 
     st.markdown(f"""
 <div class="insight-box">
