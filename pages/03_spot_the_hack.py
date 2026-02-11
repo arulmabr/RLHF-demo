@@ -330,12 +330,15 @@ else:
         hack_idx = next(i for i, r in enumerate(rd["responses"]) if r.get("is_hack"))
         correct = chosen_idx == hack_idx
 
+        # Only record result once per round (avoid duplicates on rerun)
+        if len(st.session_state.hack_results) <= current_round:
+            if correct:
+                st.session_state.hack_score += 1
+            st.session_state.hack_results.append(correct)
+
         if correct:
-            st.session_state.hack_score += 1
-            st.session_state.hack_results.append(True)
             st.success(f"Correct! Response {chr(65+hack_idx)} is the **{rd['hack_type']}** hack.")
         else:
-            st.session_state.hack_results.append(False)
             st.error(f"Not quite. The hack was Response {chr(65+hack_idx)} (**{rd['hack_type']}**). You picked {chr(65+chosen_idx)}.")
 
         st.markdown(f"""
