@@ -47,4 +47,10 @@ Use the **sidebar** to navigate:
 - **Interactive RLHF** — *You* are the human annotator. Pick preferred responses,
   watch a reward model learn your preferences, then see how RLHF optimizes the policy.
 - **Key Concepts** — KL divergence, reward hacking, DPO, and why this is hard.
+- **Spot the Reward Hack** — Quiz game: 6 rounds of identifying sycophancy, length gaming,
+  format exploits, and other reward hacking patterns.
+- **Best-of-N Sampling** — Interactive playground: see how inference-time scaling has
+  diminishing returns and how RM noise causes overoptimization.
+- **Annotator Disagreement** — Simulator: vote alongside 5 annotators with different values
+  and see why human preferences are noisy, plural, and sometimes irreconcilable.
 """)
