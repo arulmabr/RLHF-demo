@@ -41,10 +41,10 @@ COMPARISONS = [
         "A": {
             "text": (
                 "I understand being locked out is frustrating! Here are some safe options:\n\n"
-                "1. **Call a locksmith** — typically $50-100, arrives in 30 min\n"
-                "2. **Check all windows and doors** — you might have left one unlocked\n"
-                "3. **Contact your landlord** if you rent\n"
-                "4. **Call a friend/family member** who might have a spare key\n\n"
+                "1. <strong>Call a locksmith</strong> — typically $50-100, arrives in 30 min\n"
+                "2. <strong>Check all windows and doors</strong> — you might have left one unlocked\n"
+                "3. <strong>Contact your landlord</strong> if you rent\n"
+                "4. <strong>Call a friend/family member</strong> who might have a spare key\n\n"
                 "For the future, consider a lockbox or giving a spare to a trusted neighbor."
             ),
             "label": "Helpful & Cautious",
@@ -90,9 +90,9 @@ COMPARISONS = [
             "text": (
                 "I completely understand your frustration — losing your work three times "
                 "is unacceptable, and I'm sorry.\n\n"
-                "1. Let's recover your work — check **Settings > Recovery**\n"
+                "1. Let's recover your work — check <strong>Settings &gt; Recovery</strong>\n"
                 "2. I've flagged this crash pattern to our engineering team\n"
-                "3. Enable **auto-save every 2 min** in Settings > General\n\n"
+                "3. Enable <strong>auto-save every 2 min</strong> in Settings &gt; General\n\n"
                 "Would you like me to walk you through any of these steps?"
             ),
             "label": "Empathetic & Actionable",
@@ -114,10 +114,10 @@ COMPARISONS = [
         "prompt": "What causes the seasons on Earth?",
         "A": {
             "text": (
-                "Seasons are caused by Earth's **axial tilt of ~23.5 degrees**. As Earth orbits "
+                "Seasons are caused by Earth's <strong>axial tilt of ~23.5 degrees</strong>. As Earth orbits "
                 "the Sun, different hemispheres receive more direct sunlight at different times.\n\n"
                 "When the Northern Hemisphere tilts toward the Sun → summer there, winter in the south.\n\n"
-                "**Common misconception:** seasons are NOT caused by distance from the Sun — "
+                "<strong>Common misconception:</strong> seasons are NOT caused by distance from the Sun — "
                 "Earth is actually closest to the Sun in January (Northern Hemisphere winter)!"
             ),
             "label": "Accurate & Insightful",
@@ -407,78 +407,77 @@ else:
     # KL divergence
     kl = float(np.sum(opt_probs * np.log(opt_probs / base_probs)))
 
-    col_opt1, col_opt2 = st.columns(2, gap="large")
+    # Metrics row
+    m1, m2, m3 = st.columns(3)
+    m1.metric("KL Divergence", f"{kl:.3f} nats")
+    m2.metric("Beta", f"{beta:.2f}")
+    m3.metric("Max Style Shift", f"{np.max(opt_probs) - 0.2:+.1%}")
 
-    with col_opt1:
-        fig_policy = go.Figure()
-        fig_policy.add_trace(
-            go.Bar(
-                name="Base (SFT) Policy",
-                x=STYLE_DIMS,
-                y=base_probs,
-                marker_color=COLORS["gray"],
-                opacity=0.6,
-            )
+    # Policy distribution chart — full width
+    fig_policy = go.Figure()
+    fig_policy.add_trace(
+        go.Bar(
+            name="Base (SFT) Policy",
+            x=STYLE_DIMS,
+            y=base_probs,
+            marker_color=COLORS["gray"],
+            opacity=0.6,
         )
-        fig_policy.add_trace(
-            go.Bar(
-                name="RLHF-Optimized Policy",
-                x=STYLE_DIMS,
-                y=opt_probs,
-                marker_color=COLORS["blue"],
-            )
+    )
+    fig_policy.add_trace(
+        go.Bar(
+            name="RLHF-Optimized Policy",
+            x=STYLE_DIMS,
+            y=opt_probs,
+            marker_color=COLORS["blue"],
         )
-        fig_policy.update_layout(
-            title="Policy Distribution Over Response Styles",
-            yaxis_title="Probability",
-            barmode="group",
-            height=400,
-            legend=dict(orientation="h", y=1.12),
-        )
-        st.plotly_chart(fig_policy, use_container_width=True)
+    )
+    fig_policy.update_layout(
+        title="Policy Distribution Over Response Styles",
+        yaxis_title="Probability",
+        barmode="group",
+        height=400,
+        legend=dict(orientation="h", y=-0.15, x=0.5, xanchor="center"),
+        margin=dict(b=80),
+    )
+    st.plotly_chart(fig_policy, use_container_width=True)
 
-    with col_opt2:
-        st.markdown("#### Optimization Metrics")
-        m1, m2 = st.columns(2)
-        m1.metric("KL Divergence", f"{kl:.3f} nats")
-        m2.metric("Beta", f"{beta:.2f}")
+    # KL vs beta curve — full width
+    betas = np.linspace(0.02, 2.0, 100)
+    kls = []
+    for b in betas:
+        lp = np.log(base_probs) + style_weights / b
+        lp -= lp.max()
+        op = np.exp(lp)
+        op /= op.sum()
+        kls.append(float(np.sum(op * np.log(op / base_probs))))
 
-        # KL vs beta curve
-        betas = np.linspace(0.02, 2.0, 100)
-        kls = []
-        for b in betas:
-            lp = np.log(base_probs) + style_weights / b
-            lp -= lp.max()
-            op = np.exp(lp)
-            op /= op.sum()
-            kls.append(float(np.sum(op * np.log(op / base_probs))))
-
-        fig_kl = go.Figure()
-        fig_kl.add_trace(
-            go.Scatter(
-                x=betas,
-                y=kls,
-                mode="lines",
-                line=dict(color=COLORS["orange"], width=2),
-            )
+    fig_kl = go.Figure()
+    fig_kl.add_trace(
+        go.Scatter(
+            x=betas,
+            y=kls,
+            mode="lines",
+            line=dict(color=COLORS["orange"], width=2),
         )
-        fig_kl.add_trace(
-            go.Scatter(
-                x=[beta],
-                y=[kl],
-                mode="markers",
-                marker=dict(color=COLORS["red"], size=12),
-                name="Current",
-            )
+    )
+    fig_kl.add_trace(
+        go.Scatter(
+            x=[beta],
+            y=[kl],
+            mode="markers",
+            marker=dict(color=COLORS["red"], size=12),
+            name="Current",
         )
-        fig_kl.update_layout(
-            title="KL Divergence vs Beta",
-            xaxis_title="Beta (KL penalty)",
-            yaxis_title="KL(optimized || base)",
-            height=280,
-            showlegend=False,
-        )
-        st.plotly_chart(fig_kl, use_container_width=True)
+    )
+    fig_kl.update_layout(
+        title="KL Divergence vs Beta",
+        xaxis_title="Beta (KL penalty)",
+        yaxis_title="KL(optimized || base)",
+        height=300,
+        showlegend=False,
+    )
+    st.plotly_chart(fig_kl, use_container_width=True)
 
     # ── Insight: what happens at extreme beta ────────────────────────────────
     st.markdown(
