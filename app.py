@@ -21,8 +21,8 @@ UC Berkeley &bull; Spring 2026 &bull; Instructors: Karina Nguyen &amp; Kevin Mia
 </div>
 </div>
 """, unsafe_allow_html=True)
-st.title("How RLHF Actually Works")
-st.markdown("#### An interactive walkthrough of post-training alignment")
+st.title("Post-Training Interactive Labs")
+st.markdown("#### Hands-on demos for understanding alignment, evaluation, and model behavior")
 
 st.markdown("---")
 
@@ -49,18 +49,53 @@ for col, (title, desc) in zip(cols, steps):
 
 st.markdown("---")
 
-st.markdown("""
-### Try It Yourself
+st.markdown(f"""
+### Lecture 3 — Post-Training Foundations
 
-Use the **sidebar** to navigate:
+<div style="color:{COLORS['gray']}; font-size:0.85rem; margin-bottom:12px;">
+RLHF pipeline, reward modeling, and alignment tradeoffs
+</div>
+""", unsafe_allow_html=True)
 
-- **Interactive RLHF** — *You* are the human annotator. Pick preferred responses,
-  watch a reward model learn your preferences, then see how RLHF optimizes the policy.
-- **Key Concepts** — KL divergence, reward hacking, DPO, and why this is hard.
-- **Spot the Reward Hack** — Quiz game: 6 rounds of identifying sycophancy, length gaming,
-  format exploits, and other reward hacking patterns.
-- **Best-of-N Sampling** — Interactive playground: see how inference-time scaling has
-  diminishing returns and how RM noise causes overoptimization.
-- **Annotator Disagreement** — Simulator: vote alongside 5 annotators with different values
-  and see why human preferences are noisy, plural, and sometimes irreconcilable.
-""")
+l3_cols = st.columns(5)
+l3_pages = [
+    ("Interactive RLHF", "You are the annotator. Pick preferences, train a reward model, optimize a policy."),
+    ("Key Concepts", "KL divergence, reward hacking, DPO — the math behind alignment."),
+    ("Spot the Hack", "Quiz: identify sycophancy, length gaming, format exploits, and more."),
+    ("Best-of-N", "Inference-time scaling playground with RM noise and diminishing returns."),
+    ("Disagreement", "5 annotators with different values — why human feedback is noisy."),
+]
+for col, (title, desc) in zip(l3_cols, l3_pages):
+    with col:
+        st.markdown(f"""
+<div class="concept-card" style="min-height:120px;">
+<strong style="color:{COLORS['blue']}">{title}</strong><br/><br/>
+<span style="color:#95A5A6;font-size:0.82rem;">{desc}</span>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.markdown(f"""
+### Lecture 5 — Evals, Debugging & Alignment
+
+<div style="color:{COLORS['gray']}; font-size:0.85rem; margin-bottom:12px;">
+Benchmarks, model behavior evaluation, calibration, and why evals break
+</div>
+""", unsafe_allow_html=True)
+
+l5_cols = st.columns(4)
+l5_pages = [
+    ("Where's the Line?", "Classify prompts as safe or harmful — then see how cautious vs. permissive models compare to you."),
+    ("Judge the Judge", "Mini Chatbot Arena: expose length, format, and position biases in LLM-as-a-judge evaluation."),
+    ("Benchmark Decay", "Watch benchmarks saturate, get contaminated, and break from formatting changes."),
+    ("How Confident?", "Explore calibration — the gap between a model saying '95% sure' and actually being right."),
+]
+for col, (title, desc) in zip(l5_cols, l5_pages):
+    with col:
+        st.markdown(f"""
+<div class="concept-card" style="min-height:120px;">
+<strong style="color:{COLORS['orange']}">{title}</strong><br/><br/>
+<span style="color:#95A5A6;font-size:0.82rem;">{desc}</span>
+</div>
+""", unsafe_allow_html=True)
