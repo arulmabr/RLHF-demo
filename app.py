@@ -99,3 +99,28 @@ for col, (title, desc) in zip(l5_cols, l5_pages):
 <span style="color:#95A5A6;font-size:0.82rem;">{desc}</span>
 </div>
 """, unsafe_allow_html=True)
+
+st.markdown("---")
+
+st.markdown(f"""
+### Lecture 8 — Data Flywheels & Self-Improving Systems
+
+<div style="color:{COLORS['gray']}; font-size:0.85rem; margin-bottom:12px;">
+Self-improvement loops, signal types, model collapse, and inference scaling
+</div>
+""", unsafe_allow_html=True)
+
+l8_cols = st.columns(3)
+l8_pages = [
+    ("The Flywheel", "Compare RLHF, RLAIF, and verification loops — see how signal type determines the ceiling of self-improvement."),
+    ("Model Collapse", "Watch distributions narrow and tails vanish when models train on their own outputs. Then try to fix it."),
+    ("Inference Scaling", "Explore pass@k coverage, verifier quality, and when many weak samples beat one strong model call."),
+]
+for col, (title, desc) in zip(l8_cols, l8_pages):
+    with col:
+        st.markdown(f"""
+<div class="concept-card" style="min-height:120px;">
+<strong style="color:{COLORS['green']}">{title}</strong><br/><br/>
+<span style="color:#95A5A6;font-size:0.82rem;">{desc}</span>
+</div>
+""", unsafe_allow_html=True)
